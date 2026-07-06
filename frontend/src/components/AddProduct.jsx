@@ -44,14 +44,14 @@ const AddProduct = () => {
 
     axios.post("http://localhost:8080/api/product", formData)
       .then(() => alert("Product added successfully"))
-      .catch(err => alert("Validation failed: fill all fields"));
+      .catch(err => alert("Please fill in all the fields"));
   };
 
 
   return (
     <div className="container">
       <div className="center-container">
-        <form className="row g-3 pt-5" onSubmit={submitHandler}>
+        <form className="row g-3 pt-3" onSubmit={submitHandler}>
           <div className="col-md-6">
             <label className="form-label">
               <h6>Name</h6>
@@ -168,6 +168,22 @@ const AddProduct = () => {
               type="file"
               onChange={handleImageChange}
             />
+            {image && (
+              <div style={{ marginTop: '15px' }}>
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt="Product preview"
+                  style={{
+                    width: "100%",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    border: "1px solid var(--divider)",
+                    boxShadow: "var(--card-shadow)"
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div className="col-12">
             <div className="form-check">

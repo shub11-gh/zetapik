@@ -98,7 +98,7 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
     "Laptop",
     "Headphone",
     "Mobile",
-    "Electronics",
+    "Shoes",
     "Toys",
     "Fashion",
   ];
@@ -107,8 +107,11 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
       <header>
         <nav className="navbar navbar-expand-lg fixed-top">
           <div className="container-fluid">
-            <a className="navbar-brand" href="">
-              E-Commerce
+            <a className="navbar-brand" href="" style={{ marginLeft: "20px" }}>
+              <div className="logo-text">
+                <span className="zeta">Zeta</span>
+                <span className="pik">Pik</span>
+              </div>
             </a>
             <button
               className="navbar-toggler"
@@ -125,7 +128,7 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
               className="collapse navbar-collapse"
               id="navbarSupportedContent"
             >
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <ul className="navbar-nav me-auto mb-2 mb-lg-0" style={{ marginLeft: "20px" }}>
                 <li className="nav-item">
                   <a className="nav-link active" aria-current="page" href="/">
                     Home
@@ -136,7 +139,6 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
                     Add Product
                   </a>
                 </li>
-
                 <li className="nav-item dropdown">
                   <a
                     className="nav-link dropdown-toggle"
@@ -147,7 +149,6 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
                   >
                     Categories
                   </a>
-
                   <ul className="dropdown-menu">
                     {categories.map((category) => (
                       <li key={category}>
@@ -164,6 +165,7 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
 
                 <li className="nav-item"></li>
               </ul>
+
               <button className="theme-btn" onClick={() => toggleTheme()}>
                 {theme === "dark-theme" ? (
                   <i className="bi bi-moon-fill"></i>
@@ -171,7 +173,8 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
                   <i className="bi bi-sun-fill"></i>
                 )}
               </button>
-              <div className="d-flex align-items-center cart">
+
+              <div className="d-flex align-items-center cart gap-3">
                 <a href="/cart" className="nav-link text-dark">
                   <i
                     className="bi bi-cart me-2"
@@ -219,6 +222,7 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
                 {/* </form> */}
                 <div />
               </div>
+
             </div>
           </div>
         </nav>

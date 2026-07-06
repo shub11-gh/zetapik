@@ -4,9 +4,22 @@ import axios from "axios";
 import AppContext from "../Context/Context";
 
 const Home = ({ selectedCategory }) => {
-  const { data, isError, addToCart, refreshData } = useContext(AppContext);
+  const { data, isError, addToCart, decreaseQuantity, cart, refreshData } = useContext(AppContext);
   const [products, setProducts] = useState([]);
   const [isDataFetched, setIsDataFetched] = useState(false);
+  const [animatingIds, setAnimatingIds] = useState({});
+
+  const handleAddToCartClick = (e, product) => {
+    e.preventDefault();
+    if (!product.productAvailable) return;
+
+    setAnimatingIds(prev => ({ ...prev, [product.id]: true }));
+    addToCart(product);
+
+    setTimeout(() => {
+      setAnimatingIds(prev => ({ ...prev, [product.id]: false }));
+    }, 1000);
+  };
 
   useEffect(() => {
     if (!isDataFetched) {
@@ -50,8 +63,8 @@ const Home = ({ selectedCategory }) => {
 
   if (isError) {
     return (
-      <h2 className="text-center" style={{ padding: "10rem" }}>
-        Something went wrong...
+      <h2 className="text-center" style={{ padding: "10rem", backgroundColor: "var(--body_background)" }}>
+        Unable to fetch products...
       </h2>
     );
   }
@@ -65,28 +78,24 @@ const Home = ({ selectedCategory }) => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              gridColumn: "1 / -1",
+              width: "100%",
+              height: "100%",
             }}
           >
-            No Products Available
+            No Products Available...
           </h2>
         ) : (
           filteredProducts.map((product) => {
             const { id, brand, name, price, productAvailable, imageUrl } =
               product;
-            const cardStyle = {
-              width: "18rem",
-              height: "12rem",
-              boxShadow: "rgba(0, 0, 0, 0.24) 0px 2px 3px",
-              backgroundColor: productAvailable ? "#fff" : "#ccc",
-            };
             return (
               <div
-                className="card mb-3"
+                className="card mb-3 pt-2"
                 style={{
                   width: "18rem",
                   height: "24rem",
-                  boxShadow: "rgba(0, 0, 0, 0.24) 0px 2px 3px",
-                  backgroundColor: productAvailable ? "#fff" : "#ccc",
+                  opacity: productAvailable ? 1 : 0.6,
                   margin: "10px",
                   display: "flex",
                   flexDirection: "column",
@@ -103,25 +112,14 @@ const Home = ({ selectedCategory }) => {
                     style={{
                       width: "100%",
                       height: "180px",
-                      objectFit: "cover",
                       padding: "5px",
                       margin: "0",
+                      verticalAlign: "middle",
+                      borderRadius: "15px",
+                      objectFit: "cover"
                     }}
                   />
-                  <div
-                    className="buttons"
-                    style={{
-                      position: "absolute",
-                      top: "25px",
-                      left: "220px",
-                      zIndex: "1",
 
-                    }}
-                  >
-                    <div className="buttons-liked">
-                      <i className="bi bi-heart"></i>
-                    </div>
-                  </div>
                   <div
                     className="card-body"
                     style={{
@@ -146,21 +144,42 @@ const Home = ({ selectedCategory }) => {
                     <div>
                       <h5
                         className="card-text"
-                        style={{ fontWeight: "600", margin: "5px 0" }}
+                        style={{ fontWeight: "600", marginTop: "20px" }}
                       >
                         {"$" + price}
                       </h5>
-                      <button
-                        className="btn btn-primary"
-                        style={{ width: "100%" }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          addToCart(product);
-                        }}
-                        disabled={!productAvailable}
-                      >
-                        {productAvailable ? "Add to Cart" : "Out of Stock"}
-                      </button>
+                      <div style={{ marginTop: "20px" }}>
+                        {animatingIds[product.id] ? (
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '45px' }}>
+                            <i className="bi bi-check-circle-fill pop-in-anim" style={{ fontSize: '2rem' }}></i>
+                          </div>
+                        ) : cart.find(item => item.id === product.id) ? (
+                          <div className="inline-quantity-control">
+                            <button
+                              className="qty-btn"
+                              onClick={(e) => { e.preventDefault(); decreaseQuantity(product.id); }}
+                            >
+                              <i className="bi bi-dash"></i>
+                            </button>
+                            <span className="qty-amount">{cart.find(item => item.id === product.id).quantity}</span>
+                            <button
+                              className="qty-btn"
+                              onClick={(e) => { e.preventDefault(); addToCart(product); }}
+                            >
+                              <i className="bi bi-plus"></i>
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            className="btn btn-primary"
+                            style={{ width: "100%", height: "38px" }}
+                            onClick={(e) => handleAddToCartClick(e, product)}
+                            disabled={!productAvailable}
+                          >
+                            {productAvailable ? "Add to Cart" : "Out of Stock"}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Link>

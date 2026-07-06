@@ -7,6 +7,7 @@ const AppContext = createContext({
   cart: [],
   addToCart: (product) => {},
   removeFromCart: (productId) => {},
+  decreaseQuantity: (productId) => {},
   refreshData:() =>{},
   updateStockQuantity: (productId, newQuantity) =>{}
   
@@ -43,6 +44,24 @@ export const AppProvider = ({ children }) => {
     console.log("CART",cart)
   };
 
+  const decreaseQuantity = (productId) => {
+    const existingProductIndex = cart.findIndex((item) => item.id === productId);
+    if (existingProductIndex !== -1) {
+      const currentItem = cart[existingProductIndex];
+      if (currentItem.quantity <= 1) {
+        removeFromCart(productId);
+      } else {
+        const updatedCart = cart.map((item, index) =>
+          index === existingProductIndex
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        );
+        setCart(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+      }
+    }
+  };
+
   const refreshData = async () => {
     try {
       const response = await axios.get("/products");
@@ -65,7 +84,7 @@ export const AppProvider = ({ children }) => {
   }, [cart]);
   
   return (
-    <AppContext.Provider value={{ data, isError, cart, addToCart, removeFromCart,refreshData, clearCart  }}>
+    <AppContext.Provider value={{ data, isError, cart, addToCart, removeFromCart, decreaseQuantity, refreshData, clearCart  }}>
       {children}
     </AppContext.Provider>
   );

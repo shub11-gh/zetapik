@@ -10,7 +10,7 @@
 //   const [totalPrice, setTotalPrice] = useState(0);
 //   const [cartImage, setCartImage] =useState([])
 //   const [showModal, setShowModal] = useState(false);
-  
+
 //   // useEffect(() => {
 //   //   const fetchImagesAndUpdateCart = async () => {
 //   //     console.log("Cart", cart);
@@ -34,7 +34,7 @@
 //   //     );
 //   //     const filteredCartItems = updatedCartItems.filter((item) => item.available);
 //   //     setCartItems(updatedCartItems);
-     
+
 //   //   };
 
 //   //   if (cart.length) {
@@ -45,7 +45,7 @@
 //   useEffect(() => {
 //     const fetchImagesAndUpdateCart = async () => {
 //       try {
-    
+
 //         const response = await axios.get("http://localhost:8080/api/products");
 //         const backendProductIds = response.data.map((product) => product.id);
 
@@ -71,7 +71,7 @@
 //         setCartItems(cartItemsWithImages);
 //       } catch (error) {
 //         console.error("Error fetching product data:", error);
-    
+
 //       }
 //     };
 
@@ -79,7 +79,7 @@
 //       fetchImagesAndUpdateCart();
 //     }
 //   }, [cart]);
-  
+
 
 
 //   useEffect(() => {
@@ -97,7 +97,7 @@
 //     setTotalPrice(total);
 //   }, [cartItems]);
 
- 
+
 //   const handleIncreaseQuantity = (itemId) => {
 //     const newCartItems = cartItems.map((item) =>
 //       item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
@@ -124,17 +124,17 @@
 //       for (const item of cartItems) {
 //         const { imageUrl, imageName, imageData, imageType, quantity, ...rest } = item;
 //         const updatedStockQuantity = item.stockQuantity - item.quantity;
-  
+
 //         const updatedProductData = { ...rest, stockQuantity: updatedStockQuantity };
 //         console.log("updated product data", updatedProductData)
-  
+
 //         const cartProduct = new FormData();
 //         cartProduct.append("imageFile", cartImage);
 //         cartProduct.append(
 //           "product",
 //           new Blob([JSON.stringify(updatedProductData)], { type: "application/json" })
 //         );
-  
+
 //         await axios
 //           .put(`http://localhost:8080/api/product/${item.id}`, cartProduct, {
 //             headers: {
@@ -143,7 +143,7 @@
 //           })
 //           .then((response) => {
 //             console.log("Product updated successfully:", (cartProduct));
-            
+
 //           })
 //           .catch((error) => {
 //             console.error("Error updating product:", error);
@@ -155,7 +155,7 @@
 //       console.log("error during checkout", error);
 //     }
 //   };
-  
+
 //   return (
 //     <div className="cart-container">
 //       <div className="shopping-cart">
@@ -265,7 +265,7 @@ import CheckoutPopup from "./CheckoutPopup";
 import { Button } from 'react-bootstrap';
 
 const Cart = () => {
-  const { cart, removeFromCart , clearCart } = useContext(AppContext);
+  const { cart, removeFromCart, clearCart } = useContext(AppContext);
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [cartImage, setCartImage] = useState([]);
@@ -295,7 +295,7 @@ const Cart = () => {
             }
           })
         );
-        console.log("cart",cart)
+        console.log("cart", cart)
         setCartItems(cartItemsWithImages);
       } catch (error) {
         console.error("Error fetching product data:", error);
@@ -333,7 +333,7 @@ const Cart = () => {
     });
     setCartItems(newCartItems);
   };
-  
+
 
   const handleDecreaseQuantity = (itemId) => {
     const newCartItems = cartItems.map((item) =>
@@ -355,17 +355,17 @@ const Cart = () => {
       for (const item of cartItems) {
         const { imageUrl, imageName, imageData, imageType, quantity, ...rest } = item;
         const updatedStockQuantity = item.stockQuantity - item.quantity;
-  
+
         const updatedProductData = { ...rest, stockQuantity: updatedStockQuantity };
         console.log("updated product data", updatedProductData)
-  
+
         const cartProduct = new FormData();
         cartProduct.append("imageFile", cartImage);
         cartProduct.append(
           "product",
           new Blob([JSON.stringify(updatedProductData)], { type: "application/json" })
         );
-  
+
         await axios
           .put(`http://localhost:8080/api/product/${item.id}`, cartProduct, {
             headers: {
@@ -390,10 +390,10 @@ const Cart = () => {
   return (
     <div className="cart-container">
       <div className="shopping-cart">
-        <div className="title">Shopping Bag</div>
+        {/* <div className="title">Shopping Bag</div> */}
         {cartItems.length === 0 ? (
           <div className="empty" style={{ textAlign: "left", padding: "2rem" }}>
-            <h4>Your cart is empty</h4>
+            <h4 className="text-center">Your cart is empty</h4>
           </div>
         ) : (
           <>
@@ -404,11 +404,6 @@ const Cart = () => {
                   style={{ display: "flex", alignContent: "center" }}
                   key={item.id}
                 >
-                  <div className="buttons">
-                    <div className="buttons-liked">
-                      <i className="bi bi-heart"></i>
-                    </div>
-                  </div>
                   <div>
                     <img
                       src={item.imageUrl}
@@ -423,12 +418,12 @@ const Cart = () => {
 
                   <div className="quantity">
                     <button
-                      className="plus-btn"
+                      className="minus-btn"
                       type="button"
                       name="button"
-                      onClick={() => handleIncreaseQuantity(item.id)}
+                      onClick={() => handleDecreaseQuantity(item.id)}
                     >
-                      <i className="bi bi-plus-square-fill"></i>
+                      <span className="bi bi-dash-square-fill"></span>
                     </button>
                     <input
                       type="button"
@@ -437,12 +432,12 @@ const Cart = () => {
                       readOnly
                     />
                     <button
-                      className="minus-btn"
+                      className="plus-btn"
                       type="button"
                       name="button"
-                      onClick={() => handleDecreaseQuantity(item.id)}
+                      onClick={() => handleIncreaseQuantity(item.id)}
                     >
-                      <i className="bi bi-dash-square-fill"></i>
+                      <span className="bi bi-plus-square-fill"></span>
                     </button>
                   </div>
 
@@ -460,7 +455,7 @@ const Cart = () => {
             ))}
             <div className="total">Total: ${totalPrice}</div>
             <Button
-              className="btn btn-primary"
+              className="btn btn-success"
               style={{ width: "100%" }}
               onClick={() => setShowModal(true)}
             >

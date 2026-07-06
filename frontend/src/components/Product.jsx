@@ -6,10 +6,11 @@ import axios from "../axios";
 import UpdateProduct from "./UpdateProduct";
 const Product = () => {
   const { id } = useParams();
-  const { data, addToCart, removeFromCart, cart, refreshData } =
+  const { data, addToCart, removeFromCart, cart, decreaseQuantity, refreshData } =
     useContext(AppContext);
   const [product, setProduct] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [isAnimating, setIsAnimating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,7 +19,9 @@ const Product = () => {
         const response = await axios.get(
           `http://localhost:8080/api/product/${id}`
         );
-        setProduct(response.data);
+        if (response) {
+          setProduct(response.data);
+        }
         if (response.data.imageName) {
           fetchImage();
         }
@@ -34,7 +37,6 @@ const Product = () => {
       );
       setImageUrl(URL.createObjectURL(response.data));
     };
-
     fetchProduct();
   }, [id]);
 
@@ -55,9 +57,16 @@ const Product = () => {
     navigate(`/product/update/${id}`);
   };
 
-  const handlAddToCart = () => {
+  const handleAddToCartClick = (e) => {
+    e.preventDefault();
+    if (!product.productAvailable) return;
+
+    setIsAnimating(true);
     addToCart(product);
-    alert("Product added to cart");
+
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 1000);
   };
   if (!product) {
     return (
@@ -85,29 +94,55 @@ const Product = () => {
 
           <div className="product-price">
             <span>{"$" + product.price}</span>
-            <button
-              className={`cart-btn ${
-                !product.productAvailable ? "disabled-btn" : ""
-              }`}
-              onClick={handlAddToCart}
-              disabled={!product.productAvailable}
-            >
-              {product.productAvailable ? "Add to cart" : "Out of Stock"}
-            </button>
+            {isAnimating ? (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '45px', width: '200px' }}>
+                <i className="bi bi-check-circle-fill pop-in-anim" style={{ fontSize: '2rem' }}></i>
+              </div>
+            ) : cart.find(item => item.id === product.id) ? (
+              <div className="inline-quantity-control" style={{ width: '150px', height: '45px' }}>
+                <button
+                  className="qty-btn"
+                  onClick={(e) => { e.preventDefault(); decreaseQuantity(product.id); }}
+                >
+                  <i className="bi bi-dash"></i>
+                </button>
+                <span className="qty-amount">{cart.find(item => item.id === product.id).quantity}</span>
+                <button
+                  className="qty-btn"
+                  onClick={(e) => { e.preventDefault(); addToCart(product); }}
+                >
+                  <i className="bi bi-plus"></i>
+                </button>
+              </div>
+            ) : (
+              <button
+                className={`text-white cart-btn ${!product.productAvailable ? "disabled-btn" : ""}`}
+                onClick={handleAddToCartClick}
+                disabled={!product.productAvailable}
+              >
+                <strong>{product.productAvailable ? "Add to cart" : "Out of Stock"}</strong>
+              </button>
+            )}
             <h6>
               Stock Available :{" "}
-              <i style={{ color: "green", fontWeight: "bold" }}>
+              <span style={{ fontWeight: "bold", display: "inline-block", fontSize: "1.3rem" }}>
                 {product.stockQuantity}
-              </i>
+              </span>
             </h6>
-            <p className="release-date">
-              <h6>Product listed on:</h6>
-              <i> {new Date(product.releaseDate).toLocaleDateString()}</i>
-            </p>
+            <div className="release-date">
+              <h6 style={{ display: "inline-block" }}>Product listed on:</h6>
+              <i>
+                {" "}
+                {new Date(product.releaseDate).getDate().toString().padStart(2, '0')}-
+                {(new Date(product.releaseDate).getMonth() + 1).toString().padStart(2, '0')}-
+                {new Date(product.releaseDate).getFullYear()}
+              </i>
+            </div>
           </div>
-          <div className="update-button ">
+          <div className="update-button">
             <button
-              className="btn btn-primary"
+              className="btn btn-success text-white"
+              style={{ fontWeight: "bold" }}
               type="button"
               onClick={handleEditClick}
             >
@@ -115,7 +150,8 @@ const Product = () => {
             </button>
             {/* <UpdateProduct product={product} onUpdate={handleUpdate} /> */}
             <button
-              className="btn btn-primary"
+              className="btn btn-danger text-white"
+              style={{ fontWeight: "bold" }}
               type="button"
               onClick={deleteProduct}
             >
