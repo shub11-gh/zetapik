@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/logo.png" alt="ZetaPik Logo" width="100" />
+  <img src="frontend/public/logo.png" alt="ZetaPik Logo" width="100" />
 </p>
 
 <h1 align="center">ZetaPik</h1>
