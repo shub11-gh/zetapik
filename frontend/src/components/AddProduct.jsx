@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../axios";
 
 const AddProduct = () => {
   const [product, setProduct] = useState({
@@ -42,7 +42,7 @@ const AddProduct = () => {
 
     formData.append("imageFile", image);
 
-    axios.post("http://localhost:8080/api/product", formData)
+    axios.post("/product", formData)
       .then(() => alert("Product added successfully"))
       .catch(err => alert("Please fill in all the fields"));
   };

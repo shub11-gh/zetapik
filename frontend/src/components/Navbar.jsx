@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "./Home"
-import axios from "axios";
+import axios from "../axios";
 // import { json } from "react-router-dom";
 // import { BiSunFill, BiMoon } from "react-icons/bi";
 
@@ -22,7 +22,7 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
 
   const fetchData = async (value) => {
     try {
-      const response = await axios.get("http://localhost:8080/api/products");
+      const response = await axios.get("/products");
       setSearchResults(response.data);
       console.log(response.data);
     } catch (error) {
@@ -36,7 +36,7 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
       setShowSearchResults(true)
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/products/search?keyword=${value}`
+          `/products/search?keyword=${value}`
         );
         setSearchResults(response.data);
         setNoResults(response.data.length === 0);
@@ -60,10 +60,10 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
   //       let response;
   //       if (!isNaN(value)) {
   //         // Input is a number, search by ID
-  //         response = await axios.get(`http://localhost:8080/api/products/search?id=${value}`);
+  //         response = await axios.get(`/products/search?id=${value}`);
   //       } else {
   //         // Input is not a number, search by keyword
-  //         response = await axios.get(`http://localhost:8080/api/products/search?keyword=${value}`);
+  //         response = await axios.get(`/products/search?keyword=${value}`);
   //       }
 
   //       const results = response.data;
@@ -107,8 +107,9 @@ const Navbar = ({ onSelectCategory, onSearch }) => {
       <header>
         <nav className="navbar navbar-expand-lg fixed-top">
           <div className="container-fluid">
-            <a className="navbar-brand" href="" style={{ marginLeft: "20px" }}>
-              <div className="logo-text">
+            <a className="navbar-brand d-flex align-items-center" href="/" style={{ gap: "10px" }}>
+              <img src="/logo.png" alt="ZetaPik Logo" style={{ width: "45px", height: "45px", objectFit: "contain" }} />
+              <div className="logo-text" style={{ margin: 0 }}>
                 <span className="zeta">Zeta</span>
                 <span className="pik">Pik</span>
               </div>

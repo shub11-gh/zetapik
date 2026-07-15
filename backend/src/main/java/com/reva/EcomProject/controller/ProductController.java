@@ -26,7 +26,6 @@ import com.reva.EcomProject.service.ProductService;
 import jakarta.validation.Valid;
 
 @RestController
-@CrossOrigin
 @Validated
 @RequestMapping("/api")
 public class ProductController {

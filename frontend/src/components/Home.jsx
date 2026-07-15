@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../axios";
 import AppContext from "../Context/Context";
 
 const Home = ({ selectedCategory }) => {
@@ -35,7 +35,7 @@ const Home = ({ selectedCategory }) => {
           data.map(async (product) => {
             try {
               const response = await axios.get(
-                `http://localhost:8080/api/product/${product.id}/image`,
+                `/product/${product.id}/image`,
                 { responseType: "blob" }
               );
               const imageUrl = URL.createObjectURL(response.data);
@@ -63,9 +63,11 @@ const Home = ({ selectedCategory }) => {
 
   if (isError) {
     return (
-      <h2 className="text-center" style={{ padding: "10rem", backgroundColor: "var(--body_background)" }}>
-        Unable to fetch products...
-      </h2>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1, minHeight: "60vh", width: "100%", backgroundColor: "var(--body_background)" }}>
+        <h2 className="text-center" style={{ margin: 0 }}>
+          Unable to fetch products...
+        </h2>
+      </div>
     );
   }
   return (
